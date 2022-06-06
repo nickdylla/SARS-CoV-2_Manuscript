@@ -22,7 +22,11 @@ Results Folder
 `Results` - Contains all produced figures from the analysis
 ***
 
-To download the data, enable Git Large File Storage:
+To download the data there are two options available. 
+
+Option A) Download the zipped file at: https://zenodo.org/badge/latestdoi/496329437
+
+Option B) Enable Git Large File Storage:
 
 https://git-lfs.github.com/
 
