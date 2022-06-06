@@ -2,7 +2,7 @@
 Code and Data from our SARS-CoV-2 manuscript titled "Immunomodulatory fecal metabolites are associated with mortality in COVID-19 
 patients with respiratory failure"
 
-https://zenodo.org/badge/latestdoi/496329437
+[![DOI](https://zenodo.org/badge/496329437.svg)](https://zenodo.org/badge/latestdoi/496329437)
 ***
 R Version (4.1.1)
 
