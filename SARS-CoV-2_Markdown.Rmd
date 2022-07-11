@@ -3,13 +3,6 @@ title: "SARS-CoV-2 Markdown"
 author: "Nicholas P Dylla"
 date: "`r Sys.Date()`"
 output: html_document
----
-
----
-title: "SARS-CoV-2 Markdown"
-author: "Nicholas P Dylla"
-date: "`r Sys.Date()`"
-output: html_document
 editor_options: 
   chunk_output_type: console
 header-includes:
@@ -29,7 +22,7 @@ header-includes:
 1. Load Packages
 2. Load Metabolomic and Metagenomic Data
 3. Main Figures and Tables
-  1. Figure 2
+  1. Figure 1
   2. Figure 3
   3. Figure 4
   4. Figure 5
@@ -95,7 +88,7 @@ opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ### Load in Metabolomic and Metagenomic Data
 ```{r load-in-data, message=FALSE, warning=FALSE}
 #1) Load R image
-# load("./Data/SARS-CoV-2_Modeling_20220525.RData") 
+load("./Data/SARS-CoV-2_Modeling_20220711.RData")
 
 # OR #
 
@@ -119,6 +112,8 @@ covid_kraken <- readRDS("./Data/covid_kraken_patientID.rds")
 ## Save kraken data as CSV as response to reviewer's comments
 covid_kraken %>% 
   arrange(patient_ID, desc(pctseqs), Kingdom, Phylum, Class, Order, Family, Genus, Species) %>% 
+  group_by(patient_ID) %>% 
+  filter(pctseqs >= 0.0001) %>% 
   write.csv(., "./Results/covid_kraken_taxonomy.csv", row.names = F)
 
 mat <- readRDS("./Data/shotgun_matrix_patientID.rds")
@@ -237,7 +232,15 @@ dev.off()
 
 
 #### Alpha Diversity Plot Inverse Simpson START ####
-mat_invsim <- mat
+# Filter matrix to only contain percent sequences (pctseq) >= 0.0001 (0.01%)
+mat_filt <- mat %>% 
+  pivot_longer(-patient_ID, names_to = "taxid", values_to = "pctseqs") %>% 
+  group_by(patient_ID) %>% 
+  filter(pctseqs >= 0.0001) %>% 
+  pivot_wider(patient_ID, names_from = "taxid", values_from = "pctseqs", values_fill = 0) %>% 
+  as.data.frame()
+  
+mat_invsim <- mat_filt
 row.names(mat_invsim) <- mat_invsim$patient_ID
 mat_invsim <- mat_invsim %>% select(-patient_ID)
 
@@ -295,7 +298,7 @@ gg_alpha_invsim <- alpha_invsim %>%
     #                      b = 0.2,  # Bottom margin
     #                      l = 35) # Left margin
   ) +
-  ylab("Alpha Diversity\n(Inverse Simpson)\n") +
+  ylab("Alpha Diversity\n(Inverse Simpson Index)\n") +
   scale_fill_manual(values = pirate_colors) +
   scale_color_manual(values = pirate_colors) +
   scale_y_continuous(breaks = seq(0,40,5))
@@ -309,7 +312,7 @@ dev.off()
 #### Alpha Diversity Plot Inverse Simpson END ####
 
 #### Alpha Diversity Plot Shannon START ####
-mat_shannon <- mat
+mat_shannon <- mat_filt
 row.names(mat_shannon) <- mat_shannon$patient_ID
 mat_shannon <- mat_shannon %>% select(-patient_ID)
 
@@ -367,7 +370,7 @@ gg_alpha_shannon <- alpha_shannon %>%
     #                      b = 0.2,  # Bottom margin
     #                      l = 35) # Left margin
   ) +
-  ylab("Alpha Diversity\n(Shannon)\n") +
+  ylab("Alpha Diversity\n(Shannon Index)\n") +
   scale_fill_manual(values = pirate_colors) +
   scale_color_manual(values = pirate_colors) +
   scale_y_continuous(breaks = seq(0,6,1))
@@ -382,7 +385,7 @@ dev.off()
 
 
 #### Alpha Diversity Plot Richness START ####
-mat_richness <- mat
+mat_richness <- mat_filt
 row.names(mat_richness) <- mat_richness$patient_ID
 mat_richness <- mat_richness %>% select(-patient_ID)
 
@@ -423,7 +426,7 @@ gg_alpha_richness <- alpha_richness %>%
               jitter_width = 0.75,
               cis = TRUE,
               violins = FALSE) +
-  annotate("text", x = 1.15, y = 9000, label = paste0("Wilcoxon, W = ", alpha_richness_stats$statistic, ", p = ", alpha_richness_stats$p),
+  annotate("text", x = 1.15, y = 325, label = paste0("Wilcoxon, W = ", alpha_richness_stats$statistic, ", p = ", alpha_richness_stats$p),
            size = 2.3) +
   theme_bw() +
   theme(
@@ -443,7 +446,7 @@ gg_alpha_richness <- alpha_richness %>%
   ylab("Alpha Diversity\n(Species Richness)\n") +
   scale_fill_manual(values = pirate_colors) +
   scale_color_manual(values = pirate_colors) +
-  scale_y_continuous(breaks = seq(0,10000,1000))
+  scale_y_continuous(breaks = seq(0,350,50))
   
   
 gg_alpha_richness
@@ -454,12 +457,12 @@ dev.off()
 #### Alpha Diversity Plot Richness END ####
 
 #### Alpha Diversity Plot Evenness START ####
-mat_evenness <- mat
+mat_evenness <- mat_filt
 row.names(mat_evenness) <- mat_evenness$patient_ID
 mat_evenness <- mat_evenness %>% select(-patient_ID)
 mat_evenness_t <- mat_evenness %>% t()
 h <- vegan::diversity(mat_evenness)
-s <- vegan::specnumber(mat)
+s <- vegan::specnumber(mat_filt)
 alpha_evenness <- h/log(s)
 alpha_evenness <- as.data.frame(alpha_evenness)
 colnames(alpha_evenness)[1] <- "Evenness"
@@ -495,7 +498,7 @@ gg_alpha_evenness <- alpha_evenness %>%
               jitter_width = 0.75,
               cis = TRUE,
               violins = FALSE) +
-  annotate("text", x = 1.15, y = 0.7, label = paste0("Wilcoxon, W = ", alpha_evenness_stats$statistic, ", p = ", alpha_evenness_stats$p),
+  annotate("text", x = 1.15, y = 0.85, label = paste0("Wilcoxon, W = ", alpha_evenness_stats$statistic, ", p = ", alpha_evenness_stats$p),
            size = 2.3) +
   theme_bw() +
   theme(
@@ -527,10 +530,10 @@ dev.off()
 
 #### Combine Alpha Diversity Plots START ####
 gg_alpha_total <- cowplot::plot_grid(
-  gg_alpha_invsim + ylab("Inverse Simpson") + theme(axis.text.x = eb(),
+  gg_alpha_invsim + ylab("Inverse Simpson Index") + theme(axis.text.x = eb(),
                                                     axis.text.y = et(size = 8),
                                                     axis.title.y = et(size = 11)),
-  gg_alpha_shannon + ylab("Shannon") + theme(axis.text.x = eb(),
+  gg_alpha_shannon + ylab("Shannon Index") + theme(axis.text.x = eb(),
                                              axis.text.y = et(size = 8),
                                              axis.title.y = et(size = 11)),
   gg_alpha_richness + ylab("Species Richness")+ theme(axis.text = et(size = 8),
@@ -541,6 +544,7 @@ gg_alpha_total <- cowplot::plot_grid(
 
 gg_alpha_total
 #### Combine Alpha Diversity Plots END ####
+
 
 #### UMAP Plot 1 START ####
 umap_mat <- mat
@@ -606,7 +610,7 @@ table(covid_lookup$proteo_doms, covid_lookup$vital_status)
 chisq <- chisq.test(covid_lookup$proteo_doms, covid_lookup$vital_status, correct = FALSE)
 chisq
 
-corrplot::corrplot((100*chisq$residuals^2/chisq$statistic), is.cor = FALSE)
+# corrplot::corrplot((100*chisq$residuals^2/chisq$statistic), is.cor = FALSE)
 
 umap_mat_plot_colors_df <-
   umap_mat2$layout %>% 
