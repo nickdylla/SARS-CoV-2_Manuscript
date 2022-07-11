@@ -15,7 +15,7 @@ Memory: 64 GB 2667 MHz DDR4
 Graphics: AMD Radeon Pro 5500M 8 GB
 ***
 Data Folder
-`Data` - Contains all R images (.rds) that are used in the analysis
+`Data` - Contains all R images (.rds) and a single R Image (.RData) that are used in the analysis
 
 
 Results Folder
