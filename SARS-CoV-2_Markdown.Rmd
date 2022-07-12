@@ -88,7 +88,7 @@ opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
 ### Load in Metabolomic and Metagenomic Data
 ```{r load-in-data, message=FALSE, warning=FALSE}
 #1) Load R image
-load("./Data/SARS-CoV-2_Modeling_20220711.RData")
+# load("./Data/SARS-CoV-2_Modeling.RData")
 
 # OR #
 
@@ -96,7 +96,7 @@ load("./Data/SARS-CoV-2_Modeling_20220711.RData")
 
 #### START ####
 # Covid lookup table
-covid_lookup <- readRDS("./Data/covid_lookup_patientID.rds")
+covid_lookup <- readRDS("./Data/covid_lookup_patientID.rds") 
 
 # Covid transition table
 covid_transition <- readRDS("./Data/covid_transition_patientID.rds")
@@ -222,7 +222,7 @@ for (i in strip_both) {
   k <- k+1
 }
 
-pdf(paste0(paste0("./Results/20220711_Results/shotgun_relative_abundance_", format(Sys.Date(), format = "%Y%m%d"),".pdf")), height = 6, width = 12)
+pdf("./Results/shotgun_relative_abundance.pdf", height = 6, width = 12)
 
 grid.draw(proteo_grob)
 
@@ -306,7 +306,7 @@ gg_alpha_invsim <- alpha_invsim %>%
   
 gg_alpha_invsim
 
-pdf(paste0("./Results/20220711_Results/shotgun_pirate_alpha_diversity_invsim_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 7)
+pdf("./Results/shotgun_pirate_alpha_diversity_invsim_vital.pdf", height = 6, width = 7)
 gg_alpha_invsim
 dev.off()
 #### Alpha Diversity Plot Inverse Simpson END ####
@@ -378,7 +378,7 @@ gg_alpha_shannon <- alpha_shannon %>%
   
 gg_alpha_shannon
 
-pdf(paste0("./Results/20220711_Results/shotgun_pirate_alpha_diversity_shannon_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 7)
+pdf("./Results/shotgun_pirate_alpha_diversity_shannon_vital.pdf", height = 6, width = 7)
 gg_alpha_shannon
 dev.off()
 #### Alpha Diversity Plot Shannon END ####
@@ -451,7 +451,7 @@ gg_alpha_richness <- alpha_richness %>%
   
 gg_alpha_richness
 
-pdf(paste0("./Results/20220711_Results/shotgun_pirate_alpha_diversity_richness_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 7)
+pdf("./Results/shotgun_pirate_alpha_diversity_richness_vital.pdf", height = 6, width = 7)
 gg_alpha_richness
 dev.off()
 #### Alpha Diversity Plot Richness END ####
@@ -523,7 +523,7 @@ gg_alpha_evenness <- alpha_evenness %>%
   
 gg_alpha_evenness
 
-pdf(paste0("./Results/20220711_Results/shotgun_pirate_alpha_diversity_evenness_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 7)
+pdf("./Results/shotgun_pirate_alpha_diversity_evenness_vital.pdf", height = 6, width = 7)
 gg_alpha_evenness
 dev.off()
 #### Alpha Diversity Plot Observed END ####
@@ -684,7 +684,7 @@ umap_mat_plot_colors
 
 
 #### UMAP Plot 1 + Plot 2 START ####
-pdf(paste0("./Results/20220711_Results/shotgun_umap_umap_doms_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 14)
+pdf("./Results/shotgun_umap_umap_doms_vital.pdf", height = 6, width = 14)
 cowplot::plot_grid(umap_mat_plot, 
                    umap_mat_plot_colors,
                    nrow = 1, rel_widths = c(1, 1.134))
@@ -823,7 +823,7 @@ tax_melt <- yingtools2::get.otu.melt(phy_shotgun_otu_lefse, filter.zero = FALSE)
   filter(!is.na(ef_lda))
 
 
-pdf(paste0("./Results/20220711_Results/shotgun_otu_lefse_analysis_",format(Sys.Date(), format = "%Y%m%d"), ".pdf"), height = 8, width = 14)
+pdf("./Results/shotgun_otu_lefse_analysis.pdf", height = 8, width = 14)
 # Print Plot and save plot object to combine with other plots
 gg_lefse_plot <-
 gg_lefse %>% 
@@ -876,7 +876,7 @@ tax_legend <- magick::image_read_pdf("./Results/legend.v2.pdf")
 
 gg_tax_legend <- ggdraw() + draw_image(tax_legend)
 
-pdf(paste0("./Results/20220711_Results/Figure_1_",format(Sys.Date(), format = "%Y%m%d"), ".pdf"), height = 14, width = 14)
+pdf("./Results/Figure_1.pdf", height = 14, width = 14)
 
 gridExtra::grid.arrange(
   proteo_grob,             # 1
@@ -1106,7 +1106,7 @@ pROC_obj <- roc(
 coordinates <- coords(pROC_obj, "best", ret=c("threshold", "sens", "spec", "ppv", "npv"))
 
 
-cairo_pdf(paste0("./Results/20220711_Results/Figure_4A_", format(Sys.Date(), format = "%Y%m%d"), ".pdf"), width = 8, height = 6)
+cairo_pdf("./Results/Figure_4A.pdf", width = 8, height = 6)
 pROC_obj <- roc(
   cutpoints_results_var_slct$vital_status,
   cutpoints_results_var_slct$mmp_score,
@@ -1162,7 +1162,7 @@ ggs <- ggsurvplot(
 
 ggs
 
-pdf(paste0("./Results/20220711_Results/Figure_4B_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 8, onefile = FALSE)
+pdf("./Results/Figure_4B.pdf", height = 6, width = 8, onefile = FALSE)
 ggs
 dev.off()
 
@@ -1232,7 +1232,7 @@ ggstream <- covid_flow %>%
 
 ggstream
 
-ggsave(filename = paste0("./Results/20220711_Results/Figure_5_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), ggstream, height = 10, width = 10)
+ggsave(filename ="./Results/Figure_5.pdf", ggstream, height = 10, width = 10)
 ```
 
 ### Figure 2A: CARD Analysis
@@ -1361,7 +1361,7 @@ card_tot_0_mat %>%
   )
 gg_card_heatmap
 
-pdf(paste0("./Results/20220711_Results/card_heatmap_total_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 60, width = 16, onefile = F)
+pdf("./Results/card_heatmap_total.pdf", height = 60, width = 16, onefile = F)
 gg_card_heatmap
 dev.off()
 
@@ -1521,7 +1521,7 @@ gg_card_family_heatmap
 gg_card_family_heatmap_tot <- gg_card_family_heatmap + card_unadj + card_adj
 gg_card_family_heatmap_tot
 
-pdf(paste0("./Results/20220711_Results/card_heatmap_family_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 8, width = 20, onefile = F)
+pdf("./Results/card_heatmap_family.pdf", height = 8, width = 20, onefile = F)
 draw(gg_card_family_heatmap_tot, auto_adjust = F)
 dev.off()
 ```
@@ -1688,7 +1688,7 @@ gg_toxin_heatmap
 gg_toxin_heatmap_tot <- gg_toxin_heatmap + toxins_unadj + toxins_adj
 gg_toxin_heatmap_tot
 
-pdf(paste0("./Results/20220711_Results/toxins_heatmap_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 2.9, width = 16)
+pdf("./Results/toxins_heatmap.pdf", height = 2.9, width = 16)
 gg_toxin_heatmap_tot
 dev.off()
 ```
@@ -1861,7 +1861,7 @@ gg_bactocin_heatmap
 gg_bactocin_heatmap_tot <- gg_bactocin_heatmap + bactocin_unadj + bactocin_adj
 gg_bactocin_heatmap_tot
 
-pdf(paste0("./Results/20220711_Results/bacteriocin_heatmap_total_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 6, width = 16, onefile = F)
+pdf("./Results/bacteriocin_heatmap_total.pdf", height = 6, width = 16, onefile = F)
 gg_bactocin_heatmap_tot
 dev.off()
 ```
@@ -2096,7 +2096,7 @@ gg_operon_heatmap_tot <- gg_operon_heatmap + operon_unadj + operon_adj
 gg_operon_heatmap_tot
 
 
-pdf(paste0("./Results/20220711_Results/operon_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 4, width = 6, onefile = F)
+pdf("./Results/operon.pdf", height = 4, width = 6, onefile = F)
 draw(gg_operon_heatmap_tot, auto_adjust = F)
 dev.off()
 #### Operon END ####
@@ -2108,15 +2108,15 @@ ht_list <- gg_card_family_heatmap %v% gg_bactocin_heatmap %v% gg_toxin_heatmap %
 unadj_list <- card_unadj %v% bactocin_unadj %v% toxins_unadj %v% operon_unadj
 adj_list <- card_adj %v% bactocin_adj %v% toxins_adj %v% operon_adj
 
-pdf(paste0("./Results/20220711_Results/bacteriocins_toxins_card_heatmap_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 10, width = 14)
+pdf("./Results/bacteriocins_toxins_card_heatmap.pdf", height = 10, width = 14)
 draw(ht_list, ht_gap = unit(1, "cm"))
 dev.off()
 
-pdf(paste0("./Results/20220711_Results/unadjusted_heatmap_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 10, width = 14)
+pdf("./Results/unadjusted_heatmap.pdf", height = 10, width = 14)
 draw(unadj_list, ht_gap = unit(1, "cm"))
 dev.off()
 
-pdf(paste0("./Results/20220711_Results/adjusted_heatmap_", format(Sys.Date(), format = "%Y%m%d"),".pdf"),  height = 10, width = 14)
+pdf("./Results/adjusted_heatmap.pdf",  height = 10, width = 14)
 draw(adj_list, ht_gap = unit(1, "cm"))
 dev.off()
 ```
@@ -2199,7 +2199,7 @@ EnhancedVolcano(qual_tot,
 
 volcano
 
-ggsave(plot = volcano, paste0("./Results/20220711_Results/volcano_plot_total_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), width = 12, height = 8, units = "in")
+ggsave(plot = volcano, "./Results/volcano_plot_total.pdf", width = 12, height = 8, units = "in")
 ```
 
 ### Figure 3B: Quant Metabolomics
@@ -2392,7 +2392,7 @@ quant_vital_tot <- cowplot::plot_grid(quant_vital_bile + theme(legend.position =
 
 quant_vital_tot
 
-pdf(paste0("./Results/20220711_Results/covid_quant_metab_vital_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height =4, width = 12)
+pdf("./Results/covid_quant_metab_vital.pdf", height =4, width = 12)
 quant_vital_tot
 dev.off()
 #### Metabolites END ####
@@ -2400,7 +2400,7 @@ dev.off()
 
 ### Figure 3 Compilation: Join Volcano Plot and Significant Quant Metabolites
 ```{r, join-volcano-quant-plots, fig.dim=c(14,16), message=FALSE, warning=FALSE}
-pdf(paste0("./Results/20220711_Results/Figure_3_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 14, width = 16)
+pdf("./Results/Figure_3.pdf", height = 14, width = 16)
 cowplot::plot_grid(volcano, quant_vital_tot, 
                    nrow = 2,
                    rel_heights = c(0.9, 1.1),
@@ -2433,10 +2433,10 @@ tab1_2 <- print(tab1_1, nonnormal = TRUE, formatOptions = list(big.mark = ","))
 #   kableExtra::save_kable(file = "table_1_image.png", zoom = 5)
 
 
-write.csv(tab1_2, paste0("./Results/20220711_Results/Table_1_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab1_2, "./Results/Table_1.csv", row.names = TRUE)
 
 # Need to adjust pvalues
-tab1_2_padjust <- read.csv(paste0("./Results/20220711_Results/Table_1_", format(Sys.Date(), format = "%Y%m%d"),".csv"))
+tab1_2_padjust <- read.csv("./Results/Table_1.csv")
 
 tab1_2_padjust <- tab1_2_padjust %>% 
   mutate(test = ifelse(!is.na(p) & test == "", "x2", test)) %>% 
@@ -2444,7 +2444,7 @@ tab1_2_padjust <- tab1_2_padjust %>%
   rstatix::adjust_pvalue(p.col = "p", method = "BH")
 
 # Read in csv to then append adjusted pvalues
-write.csv(tab1_2_padjust, paste0("./Results/20220711_Results/Table_1_padjust_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab1_2_padjust, "./Results/Table_1_padjust.csv", row.names = TRUE)
 ```
 
 ### Table 2
@@ -2474,10 +2474,10 @@ tab2_2 <- print(tab2_1, nonnormal = TRUE, formatOptions = list(big.mark = ","))
 #   kableExtra::kable_classic() %>%
 #   kableExtra::save_kable(file = "table_2_image.png", zoom = 5)
 
-write.csv(tab2_2, paste0("./Results/20220711_Results/Table_2_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab2_2, "./Results/Table_2.csv", row.names = TRUE)
 
 # Need to adjust pvalues
-tab2_2_padjust <- read.csv(paste0("./Results/20220711_Results/Table_2_", format(Sys.Date(), format = "%Y%m%d"),".csv"))
+tab2_2_padjust <- read.csv("./Results/Table_2.csv")
 
 tab2_2_padjust <- tab2_2_padjust %>% 
   mutate(test = ifelse(!is.na(p) & test == "", "x2", test)) %>% 
@@ -2486,7 +2486,7 @@ tab2_2_padjust <- tab2_2_padjust %>%
   
 
 # Read in csv to then append adjusted pvalues
-write.csv(tab2_2_padjust, paste0("./Results/20220711_Results/Table_2_padjust_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab2_2_padjust, "./Results/Table_2_padjust.csv", row.names = TRUE)
 ```
 
 ### Table 3
@@ -2506,7 +2506,7 @@ cutpoints_unnest %>%
   mutate(compound = as.factor(compound),
          compound = factor(compound, levels = c("Deoxycholic Acid", "Isodeoxycholic Acid", "Lithocholic Acid",  "Desaminotyrosine"))) %>% 
   arrange(compound) %>% 
-write.csv(., paste0("./Results/20220711_Results/Table_3_", format(Sys.Date(), format = "%Y%m%d"), ".csv"), row.names = F)
+write.csv(., "./Results/Table_3.csv", row.names = F)
 ```
 
 ### Table 4
@@ -2543,7 +2543,7 @@ coxauc <-
   tbl_regression(exp = TRUE)
 
 gtsave(as_gt(coxauc),
-       file = paste0("./Results/20220711_Results/Table_4_", format(Sys.Date(), format = "%Y%m%d"), ".png"))
+       file = "./Results/Table_4.png")
 ```
 
 ### Table 5
@@ -2585,7 +2585,7 @@ log_t5_1 <-
   tbl_regression(exp = TRUE)
 
 gtsave(as_gt(log_t5_1),
-       file = paste0("./Results/20220711_Results/Table_5_", format(Sys.Date(), format = "%Y%m%d"), ".png"))
+       file = "./Results/Table_5.png")
 ```
 
 
@@ -2612,10 +2612,10 @@ tab_s1_1 <- CreateTableOne(
 
 tab_s1_2 <- print(tab_s1_1, nonnormal = TRUE, formatOptions = list(big.mark = ","))
 
-write.csv(tab_s1_2, paste0("./Results/20220711_Results/Table_S1_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab_s1_2, "./Results/Table_S1.csv", row.names = TRUE)
 
 # Need to adjust pvalues
-tab_s1_2_padjust <- read.csv(paste0("./Results/20220711_Results/Table_S1_", format(Sys.Date(), format = "%Y%m%d"),".csv"))
+tab_s1_2_padjust <- read.csv("./Results/Table_S1.csv")
 
 tab_s1_2_padjust <- tab_s1_2_padjust %>% 
   mutate(test = ifelse(!is.na(p) & test == "", "x2", test)) %>% 
@@ -2623,7 +2623,7 @@ tab_s1_2_padjust <- tab_s1_2_padjust %>%
   rstatix::adjust_pvalue(p.col = "p", method = "BH")
 
 # Read in csv to then append adjusted pvalues
-write.csv(tab_s1_2_padjust, paste0("./Results/20220711_Results/Table_5_padjust_", format(Sys.Date(), format = "%Y%m%d"),".csv"), row.names = TRUE)
+write.csv(tab_s1_2_padjust, "./Results/Table_5_padjust.csv", row.names = TRUE)
 ```
  
 
@@ -2669,7 +2669,7 @@ emapper_2 %>%
   ylab("Percentage of Annotated KEGG Pathways (%)\n") +
   coord_flip()
 
-ggsave(plot = gg_emapper_box, file = paste0("./Results/20220711_Results/Figure_S2_",format(Sys.Date(), format = "%Y%m%d"), ".pdf"), width = 14, height = 10, units = "in")
+ggsave(plot = gg_emapper_box, file = "./Results/Figure_S2.pdf", width = 14, height = 10, units = "in")
 ```
 
 ### Supplemental Figure 3: Qualitative Metabolomic Heatmap
@@ -2784,7 +2784,7 @@ gg_covid_heatmap <-
   )
 gg_covid_heatmap
 
-pdf(paste0("./Results/20220711_Results/Figure_S3_", format(Sys.Date(), format = "%Y%m%d"),".pdf"), height = 12, width = 17, onefile = F)
+pdf("./Results/Figure_S3.pdf", height = 12, width = 17, onefile = F)
 gg_covid_heatmap
 dev.off()
 
@@ -2794,6 +2794,9 @@ dev.off()
 
 ### Save Image
 ```{r, save-image, message=FALSE, warning=FALSE}
-save.image(file = paste0("./Data/SARS-CoV-2_Modeling_", format(Sys.Date(), format = "%Y%m%d"), ".RData"))
+save.image(file = "./Data/SARS-CoV-2_Modeling.RData")
 ```
+
+
+
 
